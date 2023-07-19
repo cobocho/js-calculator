@@ -1,14 +1,19 @@
 class App {
   #screen;
 
+  // 스크린에 보일 식 문자열
   inputField = '';
 
+  // 입력된 수 배열
   inputLog = [];
 
+  // 가장 처음 입력된 연산자
   operation = null;
 
+  // 가장 최근 입력된 연산자 or 항 (ex. '3', '152', '+')
   currentValue = '';
 
+  // 가장 최근 연산 결과
   result = null;
 
   constructor(screen) {
@@ -43,8 +48,11 @@ class App {
       }
       const operation = e.target.dataset.value;
       this.setOperation(operation);
-      this.changeInputField();
-      if (operation === '=') this.clearCaculator();
+      if (operation === '=') {
+        this.calculate();
+        this.changeInputField();
+        this.clearCaculator();
+      } else this.changeInputField();
     });
   }
 
@@ -53,8 +61,6 @@ class App {
     modifier.addEventListener('click', () => {
       this.clearCaculator();
       this.changeInputField();
-      this.currentValue = '';
-      this.inputField = '';
     });
   }
 
@@ -69,9 +75,6 @@ class App {
     this.inputField += operation;
     this.currentValue = '';
     if (!this.operation) this.operation = operation;
-    if (operation === '=') {
-      this.calculate();
-    }
   }
 
   calculate() {
@@ -97,14 +100,18 @@ class App {
 
   clearCaculator() {
     if (this.result) this.inputField = this.result;
-    else this.inputField = '0';
+    else {
+      this.inputField = '';
+      this.currentValue = '';
+    }
     this.inputLog = [];
     this.operation = null;
     this.result = null;
   }
 
   changeInputField() {
-    this.#screen.textContent = this.inputField;
+    if (!this.inputField) this.#screen.textContent = '0';
+    else this.#screen.textContent = this.inputField;
   }
 }
 
