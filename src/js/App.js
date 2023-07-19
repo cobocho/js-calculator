@@ -1,28 +1,31 @@
 class App {
+  #screen;
+
   #inputField = '';
 
-  #total;
+  operation = null;
 
-  constructor() {
-    this.#init();
-  }
+  total = 0;
 
-  #init() {
-    console.log('start');
-    this.#total = document.querySelector('#total');
+  numberLog = [];
+
+  init() {
+    this.#screen = document.querySelector('#total');
     this.#setKeypad();
   }
 
   #setKeypad() {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
-      this.#inputField += e.target.dataset.value;
+      const { value } = e.target.dataset;
+      this.total += value;
+      this.#inputField += value;
       this.#changeInputField();
     });
   }
 
   #changeInputField() {
-    this.#total.textContent = this.#inputField;
+    this.#screen.textContent = this.#inputField;
   }
 }
 
