@@ -7,8 +7,9 @@ class App {
   // 스크린에 보일 수식 문자열
   inputField = '';
 
-  // 입력된 수 배열
-  numbers = [];
+  first = null;
+
+  latter = null;
 
   // 가장 처음 입력된 연산자
   operation = null;
@@ -57,17 +58,16 @@ class App {
       } else {
         this.setOperation(operation);
         this.render();
-        this.currentValue = '';
       }
     });
   }
 
   #checkFormula() {
-    if (!this.numbers.length) {
+    if (!this.former) {
       alert(MESSAGES.ENTER_THE_REMAIN_VALUE);
       return;
     }
-    this.numbers.push(Number(this.currentValue));
+    this.latter = Number(this.currentValue);
     this.calculate();
     this.render();
     this.clear();
@@ -92,25 +92,25 @@ class App {
   }
 
   setOperation(operation) {
-    this.numbers.push(Number(this.currentValue));
+    this.former = Number(this.currentValue);
     this.inputField += operation;
+    this.currentValue = '';
     if (!this.operation) this.operation = operation;
   }
 
   calculate() {
-    const [former, latter] = this.numbers;
     switch (this.operation) {
       case PLUS:
-        this.result = former + latter;
+        this.result = this.former + this.latter;
         break;
       case MINUS:
-        this.result = former - latter;
+        this.result = this.former - this.latter;
         break;
       case MULTIPLICATION:
-        this.result = former * latter;
+        this.result = this.former * this.latter;
         break;
       case DIVISION:
-        this.result = Math.floor(former / latter);
+        this.result = Math.floor(this.former / this.latter);
         break;
       default:
         return;
@@ -125,7 +125,8 @@ class App {
       this.inputField = '';
       this.currentValue = '';
     }
-    this.numbers = [];
+    this.former = null;
+    this.latter = null;
     this.operation = null;
     this.result = null;
   }
