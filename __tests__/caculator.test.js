@@ -80,7 +80,6 @@ describe('AC 테스트', () => {
     app.operation = '';
     app.inputLog = [20];
     app.result = 20;
-    app.resetCalculator();
     app.clearCaculator();
     expect(app.result).toEqual(null);
     expect(app.inputLog.length).toEqual(0);
@@ -116,6 +115,7 @@ describe('소숫점 테스트', () => {
 
   test('4 / 3는 1이다.', () => {
     app.inputLog = [4, 3];
+    app.operation = '/';
     app.calculate();
     expect(app.result).toEqual(1);
   });
