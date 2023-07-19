@@ -4,5 +4,3 @@ window.onload = () => {
   const app = new App(document.querySelector('#total'));
   app.init();
 };
-
-// const foo = function () {};

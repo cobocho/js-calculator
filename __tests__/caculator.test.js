@@ -1,8 +1,9 @@
 import App from '../src/js/App.js';
+import { DIVISION, MINUS, MULTIPLICATION, PLUS } from '../src/js/constants.js';
 
 describe('덧셈 테스트', () => {
-  const app = new App();
-  app.operation = '+';
+  const app = new App(null);
+  app.operation = PLUS;
 
   test('1 + 1은 2이다.', () => {
     app.inputLog = [1, 1];
@@ -18,8 +19,8 @@ describe('덧셈 테스트', () => {
 });
 
 describe('뺄셈 테스트', () => {
-  const app = new App();
-  app.operation = '-';
+  const app = new App(null);
+  app.operation = MINUS;
 
   test('2 - 1은 1이다.', () => {
     app.inputLog = [2, 1];
@@ -35,8 +36,8 @@ describe('뺄셈 테스트', () => {
 });
 
 describe('곱셈 테스트', () => {
-  const app = new App();
-  app.operation = 'X';
+  const app = new App(null);
+  app.operation = MULTIPLICATION;
 
   test('2 * 2는 4이다.', () => {
     app.inputLog = [2, 2];
@@ -52,8 +53,8 @@ describe('곱셈 테스트', () => {
 });
 
 describe('나눗셈 테스트', () => {
-  const app = new App();
-  app.operation = '/';
+  const app = new App(null);
+  app.operation = DIVISION;
 
   test('4 / 2는 2이다.', () => {
     app.inputLog = [4, 2];
@@ -68,10 +69,10 @@ describe('나눗셈 테스트', () => {
 });
 
 describe('AC 테스트', () => {
-  const app = new App();
+  const app = new App(null);
 
   test('결과가 존재하지 않는 경우', () => {
-    app.calculate('clear');
+    app.calculate();
     expect(app.result).toEqual(null);
     expect(app.inputLog.length).toEqual(0);
   });
@@ -87,7 +88,7 @@ describe('AC 테스트', () => {
 });
 
 describe('최대 자릿수 테스트', () => {
-  const app = new App();
+  const app = new App(null);
 
   test('한자릿수 입력', () => {
     app.addCurrentValue('1');
@@ -106,12 +107,13 @@ describe('최대 자릿수 테스트', () => {
 
   test('네자릿수 입력', () => {
     app.addCurrentValue('1');
+    console.log(app.currentValue);
     expect(app.currentValue.length <= 3).toEqual(true);
   });
 });
 
 describe('소숫점 테스트', () => {
-  const app = new App();
+  const app = new App(null);
 
   test('4 / 3는 1이다.', () => {
     app.inputLog = [4, 3];

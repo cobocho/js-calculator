@@ -1,7 +1,11 @@
+import { EQUAL, MINUS, PLUS, MULTIPLICATION, DIVISION, MAX_DIGIT, MESSAGES } from './constants.js';
+
 class App {
   #screen;
 
-  // 스크린에 보일 식 문자열
+  #MAX_DIGIT;
+
+  // 스크린에 보일 수식 문자열
   inputField = '';
 
   // 입력된 수 배열
@@ -10,7 +14,7 @@ class App {
   // 가장 처음 입력된 연산자
   operation = null;
 
-  // 가장 최근 입력된 연산자 or 항 (ex. '3', '152', '+')
+  // 가장 최근 입력된 항 (ex. '3', '152')
   currentValue = '';
 
   // 가장 최근 연산 결과
@@ -18,6 +22,7 @@ class App {
 
   constructor(screen) {
     this.#screen = screen;
+    this.#MAX_DIGIT = MAX_DIGIT;
   }
 
   init() {
@@ -30,8 +35,8 @@ class App {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
       const { value } = e.target.dataset;
-      if (this.currentValue.length >= 3) {
-        alert('세자리 이하의 숫자를 입력해주세요!!');
+      if (this.currentValue.length >= this.#MAX_DIGIT) {
+        alert(MESSAGES.UNDER_MAX_DIGIT);
         return;
       }
       this.addCurrentValue(value);
@@ -43,12 +48,12 @@ class App {
     const operations = document.querySelector('.operations');
     operations.addEventListener('click', (e) => {
       if (!this.currentValue) {
-        alert('숫자를 입력하고 연산자를 입력해주세요!');
+        alert(MESSAGES.ENTER_OP_BEFOR_NUMBER);
         return;
       }
       const operation = e.target.dataset.value;
       this.setOperation(operation);
-      if (operation === '=') {
+      if (operation === EQUAL) {
         this.calculate();
         this.changeInputField();
         this.clearCaculator();
@@ -65,7 +70,11 @@ class App {
   }
 
   addCurrentValue(value) {
-    if ((this.currentValue === '' && value === '0') || this.currentValue.length >= 3) return;
+    const isFirstZero = this.currentValue === '' && value === '0';
+    const isOverMaxDigit = this.currentValue.length >= this.#MAX_DIGIT;
+
+    if (isFirstZero || isOverMaxDigit) return;
+
     this.currentValue += value;
     this.inputField += value;
   }
@@ -78,21 +87,22 @@ class App {
   }
 
   calculate() {
+    const [former, latter] = this.inputLog;
     switch (this.operation) {
-      case '+':
-        this.result = this.inputLog[0] + this.inputLog[1];
+      case PLUS:
+        this.result = former + latter;
         break;
-      case '-':
-        this.result = this.inputLog[0] - this.inputLog[1];
+      case MINUS:
+        this.result = former - latter;
         break;
-      case 'X':
-        this.result = this.inputLog[0] * this.inputLog[1];
+      case MULTIPLICATION:
+        this.result = former * latter;
         break;
-      case '/':
-        this.result = Math.floor(this.inputLog[0] / this.inputLog[1]);
+      case DIVISION:
+        this.result = Math.floor(former / latter);
         break;
       default:
-        break;
+        return;
     }
     this.inputField = this.result;
     this.currentValue = String(this.result);
@@ -110,8 +120,8 @@ class App {
   }
 
   changeInputField() {
-    if (!this.inputField) this.#screen.textContent = '0';
-    else this.#screen.textContent = this.inputField;
+    if (this.inputField) this.#screen.textContent = this.inputField;
+    else this.#screen.textContent = '0';
   }
 }
 
