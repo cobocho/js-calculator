@@ -1,16 +1,14 @@
-import { EQUAL, MINUS, PLUS, MULTIPLICATION, DIVISION, MAX_DIGIT, MESSAGES } from './constants.js';
+import { EQUAL, MINUS, PLUS, MULTIPLICATION, DIVISION, MESSAGES } from './constants.js';
 import { isValidDigit } from './validation.js';
 
 class App {
   #screen;
 
-  #MAX_DIGIT;
-
   // 스크린에 보일 수식 문자열
   inputField = '';
 
   // 입력된 수 배열
-  inputLog = [];
+  numbers = [];
 
   // 가장 처음 입력된 연산자
   operation = null;
@@ -23,7 +21,6 @@ class App {
 
   constructor(screen) {
     this.#screen = screen;
-    this.#MAX_DIGIT = MAX_DIGIT;
   }
 
   init() {
@@ -36,13 +33,14 @@ class App {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
       const { value } = e.target.dataset;
-      const isUnderrMaxDigit = isValidDigit(this.currentValue);
-      if (!isUnderrMaxDigit) {
+      if (!value) return;
+      const isUnderMaxDigit = isValidDigit(this.currentValue);
+      if (!isUnderMaxDigit) {
         alert(MESSAGES.UNDER_MAX_DIGIT);
         return;
       }
       this.addCurrentValue(value);
-      this.renderScreenValue();
+      this.render();
     });
   }
 
@@ -55,31 +53,31 @@ class App {
       }
       const operation = e.target.dataset.value;
       if (operation === EQUAL) {
-        this.checkValidFormula();
+        this.#checkFormula();
       } else {
         this.setOperation(operation);
-        this.renderScreenValue();
+        this.render();
         this.currentValue = '';
       }
     });
   }
 
-  checkValidFormula() {
-    if (!this.inputLog.length) {
+  #checkFormula() {
+    if (!this.numbers.length) {
       alert(MESSAGES.ENTER_THE_REMAIN_VALUE);
       return;
     }
-    this.inputLog.push(Number(this.currentValue));
+    this.numbers.push(Number(this.currentValue));
     this.calculate();
-    this.renderScreenValue();
-    this.clearCaculator();
+    this.render();
+    this.clear();
   }
 
   #setModifierEvent() {
     const modifier = document.querySelector('.modifier');
     modifier.addEventListener('click', () => {
-      this.clearCaculator();
-      this.renderScreenValue();
+      this.clear();
+      this.render();
     });
   }
 
@@ -94,13 +92,13 @@ class App {
   }
 
   setOperation(operation) {
-    this.inputLog.push(Number(this.currentValue));
+    this.numbers.push(Number(this.currentValue));
     this.inputField += operation;
     if (!this.operation) this.operation = operation;
   }
 
   calculate() {
-    const [former, latter] = this.inputLog;
+    const [former, latter] = this.numbers;
     switch (this.operation) {
       case PLUS:
         this.result = former + latter;
@@ -121,18 +119,18 @@ class App {
     this.currentValue = String(this.result);
   }
 
-  clearCaculator() {
+  clear() {
     if (this.result) this.inputField = this.result;
     else {
       this.inputField = '';
       this.currentValue = '';
     }
-    this.inputLog = [];
+    this.numbers = [];
     this.operation = null;
     this.result = null;
   }
 
-  renderScreenValue() {
+  render() {
     if (this.inputField) this.#screen.textContent = this.inputField;
     else this.#screen.textContent = '0';
   }
