@@ -1,6 +1,6 @@
 import App from './App.js';
 
 window.onload = () => {
-  const app = new App(document.querySelector('#total'));
+  const app = new App();
   app.init();
 };
