@@ -26,12 +26,12 @@ class App {
   }
 
   init() {
-    this.setKeypadEvent();
-    this.setOperationsEvent();
-    this.setModifierEvent();
+    this.#setKeypadEvent();
+    this.#setOperationsEvent();
+    this.#setModifierEvent();
   }
 
-  setKeypadEvent() {
+  #setKeypadEvent() {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
       const { value } = e.target.dataset;
@@ -40,11 +40,11 @@ class App {
         return;
       }
       this.addCurrentValue(value);
-      this.changeInputField();
+      this.changeScreenValue();
     });
   }
 
-  setOperationsEvent() {
+  #setOperationsEvent() {
     const operations = document.querySelector('.operations');
     operations.addEventListener('click', (e) => {
       if (!this.currentValue) {
@@ -55,17 +55,17 @@ class App {
       this.setOperation(operation);
       if (operation === EQUAL) {
         this.calculate();
-        this.changeInputField();
+        this.changeScreenValue();
         this.clearCaculator();
-      } else this.changeInputField();
+      } else this.changeScreenValue();
     });
   }
 
-  setModifierEvent() {
+  #setModifierEvent() {
     const modifier = document.querySelector('.modifier');
     modifier.addEventListener('click', () => {
       this.clearCaculator();
-      this.changeInputField();
+      this.changeScreenValue();
     });
   }
 
@@ -119,7 +119,7 @@ class App {
     this.result = null;
   }
 
-  changeInputField() {
+  changeScreenValue() {
     if (this.inputField) this.#screen.textContent = this.inputField;
     else this.#screen.textContent = '0';
   }
