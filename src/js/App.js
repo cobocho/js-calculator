@@ -18,6 +18,27 @@ class App {
     this.#setModifier();
   }
 
+  calculate() {
+    console.log(this.#inputLog);
+    switch (this.operation) {
+      case '+':
+        this.result = this.#inputLog[0] + this.#inputLog[1];
+        break;
+      case '-':
+        this.result = this.#inputLog[0] - this.#inputLog[1];
+        break;
+      case 'X':
+        this.result = this.#inputLog[0] * this.#inputLog[1];
+        break;
+      case '/':
+        this.result = Math.floor(this.#inputLog[0] / this.#inputLog[1]);
+        break;
+      default:
+        break;
+    }
+    this.#resetCalculator();
+  }
+
   #setKeypad() {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
@@ -35,6 +56,7 @@ class App {
 
   #setModifier() {
     const modifier = document.querySelector('.modifier');
+    this.result = null;
     modifier.addEventListener('click', () => {
       this.#resetCalculator();
     });
@@ -53,6 +75,7 @@ class App {
       this.currentValue = '';
       this.#changeInputField();
       if (!this.operation) this.operation = operation;
+      if (operation === '=') this.calculate();
     });
   }
 
@@ -61,12 +84,18 @@ class App {
   }
 
   #resetCalculator() {
-    if (this.result) this.#inputField = this.result;
-    else this.#inputField = '0';
+    if (this.result) {
+      this.#inputField = this.result;
+      this.currentValue = this.result;
+    } else {
+      this.#inputField = '0';
+      this.currentValue = '';
+    }
     this.#changeInputField();
     if (!this.result) this.#inputField = '';
-    this.total = 0;
     this.#inputLog = [];
+    this.operation = null;
+    this.total = 0;
   }
 }
 
