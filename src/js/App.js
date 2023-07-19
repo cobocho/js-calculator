@@ -22,13 +22,7 @@ class App {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
       const { value } = e.target.dataset;
-      if (this.currentValue.length >= 3) {
-        alert('세자릿수 이하의 숫자만 입력 가능합니다!');
-        return;
-      }
-      if (this.currentValue === '' && value === '0') return;
-      this.currentValue += value;
-      this.inputField += value;
+      this.addCurrentValue(value);
       this.changeInputField();
     });
   }
@@ -54,6 +48,12 @@ class App {
       this.setOperation(operation);
       this.changeInputField();
     });
+  }
+
+  addCurrentValue(value) {
+    if ((this.currentValue === '' && value === '0') || this.currentValue.length >= 3) return;
+    this.currentValue += value;
+    this.inputField += value;
   }
 
   setOperation(operation) {
@@ -98,7 +98,6 @@ class App {
 
   clearCaculator() {
     this.result = null;
-    this.inputField = '';
     this.inputField = '0';
     this.currentValue = '';
   }
