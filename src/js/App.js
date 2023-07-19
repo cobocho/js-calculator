@@ -56,7 +56,12 @@ class App {
       }
 
       const operation = e.target.dataset.value;
-      this.setOperation(operation);
+
+      if (this.former && !this.latter) this.latter = Number(this.currentValue);
+      if (!this.former) this.former = Number(this.currentValue);
+
+      if (operation === EQUAL) this.checkFormula();
+      else this.setOperation(operation);
     });
   }
 
@@ -78,27 +83,21 @@ class App {
     this.inputField += value;
   }
 
+  setOperation(operation) {
+    this.inputField += operation;
+    this.currentValue = '';
+    this.#render(this.inputField);
+    if (!this.operation) this.operation = operation;
+  }
+
   checkFormula() {
     if (!this.former) {
       alert(MESSAGES.ENTER_THE_REMAIN_VALUE);
       return;
     }
-
     this.calculate();
-    this.#render();
+    this.#render(this.inputField);
     this.clear();
-  }
-
-  setOperation(operation) {
-    if (this.former && !this.latter) this.latter = Number(this.currentValue);
-    if (!this.former) this.former = Number(this.currentValue);
-    if (operation === EQUAL) {
-      this.checkFormula();
-      return;
-    }
-    this.inputField += operation;
-    this.currentValue = '';
-    if (!this.operation) this.operation = operation;
   }
 
   calculate() {
