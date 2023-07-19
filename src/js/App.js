@@ -7,11 +7,11 @@ class App {
   // 스크린에 보일 수식 문자열
   inputField = '';
 
-  // 가장 처음 입력된 연산자
-  operation = null;
-
   // 가장 최근 입력된 항 (ex. '3', '152')
   currentValue = '';
+
+  // 가장 처음 입력된 연산자
+  operation = null;
 
   // 가장 최근 연산 결과
   result = null;
@@ -43,7 +43,7 @@ class App {
       }
 
       this.addCurrentValue(value);
-      this.render();
+      this.#render(this.inputField);
     });
   }
 
@@ -57,26 +57,14 @@ class App {
 
       const operation = e.target.dataset.value;
       this.setOperation(operation);
-      this.render();
     });
-  }
-
-  #checkFormula() {
-    if (!this.former) {
-      alert(MESSAGES.ENTER_THE_REMAIN_VALUE);
-      return;
-    }
-
-    this.calculate();
-    this.render();
-    this.clear();
   }
 
   #setModifierEvent() {
     const modifier = document.querySelector('.modifier');
     modifier.addEventListener('click', () => {
       this.clear();
-      this.render();
+      this.#render(this.inputField);
     });
   }
 
@@ -90,11 +78,22 @@ class App {
     this.inputField += value;
   }
 
+  checkFormula() {
+    if (!this.former) {
+      alert(MESSAGES.ENTER_THE_REMAIN_VALUE);
+      return;
+    }
+
+    this.calculate();
+    this.#render();
+    this.clear();
+  }
+
   setOperation(operation) {
     if (this.former && !this.latter) this.latter = Number(this.currentValue);
     if (!this.former) this.former = Number(this.currentValue);
     if (operation === EQUAL) {
-      this.#checkFormula();
+      this.checkFormula();
       return;
     }
     this.inputField += operation;
@@ -134,8 +133,8 @@ class App {
     this.result = null;
   }
 
-  render() {
-    if (this.inputField) this.#screen.textContent = this.inputField;
+  #render(value) {
+    if (value) this.#screen.textContent = value;
     else this.#screen.textContent = '0';
   }
 }
