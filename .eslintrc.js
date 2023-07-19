@@ -12,5 +12,6 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'import/extensions': ['off'],
     'class-methods-use-this': 'off',
+    'no-alert': 'off',
   },
 };

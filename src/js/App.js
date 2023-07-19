@@ -3,13 +3,13 @@ class App {
 
   #inputField = '';
 
+  #inputLog = [];
+
   operation = null;
 
-  currentValue = 0;
+  currentValue = '';
 
   result = null;
-
-  numberLog = [];
 
   init() {
     this.#screen = document.querySelector('#total');
@@ -21,7 +21,12 @@ class App {
   #setKeypad() {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
+      if (this.currentValue.length >= 3) {
+        alert('세자릿수 이하의 숫자만 입력 가능합니다!');
+        return;
+      }
       const { value } = e.target.dataset;
+      if (this.currentValue === '' && value === '0') return;
       this.currentValue += value;
       this.#inputField += value;
       this.#changeInputField();
@@ -38,19 +43,21 @@ class App {
   #setOperations() {
     const operations = document.querySelector('.operations');
     operations.addEventListener('click', (e) => {
-      if (this.operation) return;
+      if (!this.currentValue) {
+        alert('숫자를 입력하고 연산자를 입력해주세요!');
+        return;
+      }
       const operation = e.target.dataset.value;
-      this.numberLog.push(Number(this.currentValue));
+      this.#inputLog.push(Number(this.currentValue));
       this.#inputField += operation;
-      this.operation = operation;
-      this.currentValue = 0;
+      this.currentValue = '';
       this.#changeInputField();
+      if (!this.operation) this.operation = operation;
     });
   }
 
   #changeInputField() {
     this.#screen.textContent = this.#inputField;
-    console.log(this.numberLog);
   }
 
   #resetCalculator() {
@@ -59,6 +66,7 @@ class App {
     this.#changeInputField();
     if (!this.result) this.#inputField = '';
     this.total = 0;
+    this.#inputLog = [];
   }
 }
 
