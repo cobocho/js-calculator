@@ -1,5 +1,5 @@
 class App {
-  screen;
+  #screen;
 
   inputField = '';
 
@@ -11,8 +11,11 @@ class App {
 
   result = null;
 
+  constructor(screen) {
+    this.#screen = screen;
+  }
+
   init() {
-    this.screen = document.querySelector('#total');
     this.setKeypadEvent();
     this.setOperationsEvent();
     this.setModifierEvent();
@@ -22,17 +25,11 @@ class App {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
       const { value } = e.target.dataset;
+      if (this.currentValue.length >= 3) {
+        alert('세자리 이하의 숫자를 입력해주세요!!');
+        return;
+      }
       this.addCurrentValue(value);
-      this.changeInputField();
-    });
-  }
-
-  setModifierEvent() {
-    const modifier = document.querySelector('.modifier');
-    modifier.addEventListener('click', () => {
-      this.result = null;
-      this.clearCaculator();
-      this.resetCalculator();
       this.changeInputField();
     });
   }
@@ -47,6 +44,17 @@ class App {
       const operation = e.target.dataset.value;
       this.setOperation(operation);
       this.changeInputField();
+      if (operation === '=') this.clearCaculator();
+    });
+  }
+
+  setModifierEvent() {
+    const modifier = document.querySelector('.modifier');
+    modifier.addEventListener('click', () => {
+      this.clearCaculator();
+      this.changeInputField();
+      this.currentValue = '';
+      this.inputField = '';
     });
   }
 
@@ -63,7 +71,6 @@ class App {
     if (!this.operation) this.operation = operation;
     if (operation === '=') {
       this.calculate();
-      this.resetCalculator();
     }
   }
 
@@ -84,26 +91,20 @@ class App {
       default:
         break;
     }
-  }
-
-  resetCalculator() {
-    if (this.result) {
-      this.inputField = this.result;
-      this.currentValue = String(this.result);
-    }
-    this.inputLog = [];
-    this.operation = null;
-    this.total = 0;
+    this.inputField = this.result;
+    this.currentValue = String(this.result);
   }
 
   clearCaculator() {
+    if (this.result) this.inputField = this.result;
+    else this.inputField = '0';
+    this.inputLog = [];
+    this.operation = null;
     this.result = null;
-    this.inputField = '0';
-    this.currentValue = '';
   }
 
   changeInputField() {
-    this.screen.textContent = this.inputField;
+    this.#screen.textContent = this.inputField;
   }
 }
 
