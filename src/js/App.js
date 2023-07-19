@@ -7,10 +7,6 @@ class App {
   // 스크린에 보일 수식 문자열
   inputField = '';
 
-  first = null;
-
-  latter = null;
-
   // 가장 처음 입력된 연산자
   operation = null;
 
@@ -19,6 +15,10 @@ class App {
 
   // 가장 최근 연산 결과
   result = null;
+
+  former = null;
+
+  latter = null;
 
   constructor(screen) {
     this.#screen = screen;
@@ -35,11 +35,13 @@ class App {
     digits.addEventListener('click', (e) => {
       const { value } = e.target.dataset;
       if (!value) return;
+
       const isUnderMaxDigit = isValidDigit(this.currentValue);
       if (!isUnderMaxDigit) {
         alert(MESSAGES.UNDER_MAX_DIGIT);
         return;
       }
+
       this.addCurrentValue(value);
       this.render();
     });
@@ -52,13 +54,10 @@ class App {
         alert(MESSAGES.ENTER_OP_BEFOR_NUMBER);
         return;
       }
+
       const operation = e.target.dataset.value;
-      if (operation === EQUAL) {
-        this.#checkFormula();
-      } else {
-        this.setOperation(operation);
-        this.render();
-      }
+      this.setOperation(operation);
+      this.render();
     });
   }
 
@@ -67,7 +66,7 @@ class App {
       alert(MESSAGES.ENTER_THE_REMAIN_VALUE);
       return;
     }
-    this.latter = Number(this.currentValue);
+
     this.calculate();
     this.render();
     this.clear();
@@ -82,17 +81,22 @@ class App {
   }
 
   addCurrentValue(value) {
-    const isFirstZero = this.currentValue === '' && value === '0';
+    const isformerZero = this.currentValue === '' && value === '0';
     const isUnderrMaxDigit = isValidDigit(this.currentValue);
 
-    if (isFirstZero || !isUnderrMaxDigit) return;
+    if (isformerZero || !isUnderrMaxDigit) return;
 
     this.currentValue += value;
     this.inputField += value;
   }
 
   setOperation(operation) {
-    this.former = Number(this.currentValue);
+    if (this.former && !this.latter) this.latter = Number(this.currentValue);
+    if (!this.former) this.former = Number(this.currentValue);
+    if (operation === EQUAL) {
+      this.#checkFormula();
+      return;
+    }
     this.inputField += operation;
     this.currentValue = '';
     if (!this.operation) this.operation = operation;
@@ -120,8 +124,7 @@ class App {
   }
 
   clear() {
-    if (this.result) this.inputField = this.result;
-    else {
+    if (!this.result) {
       this.inputField = '';
       this.currentValue = '';
     }

@@ -126,7 +126,6 @@ describe('최대 자릿수 테스트', () => {
 
   test('네자릿수 입력', () => {
     app.addCurrentValue('1');
-    console.log(app.currentValue);
     expect(app.currentValue.length <= 3).toEqual(true);
   });
 });
