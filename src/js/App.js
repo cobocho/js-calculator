@@ -1,4 +1,5 @@
 import { EQUAL, MINUS, PLUS, MULTIPLICATION, DIVISION, MAX_DIGIT, MESSAGES } from './constants.js';
+import { isValidDigit } from './validation.js';
 
 class App {
   #screen;
@@ -35,12 +36,13 @@ class App {
     const digits = document.querySelector('.digits');
     digits.addEventListener('click', (e) => {
       const { value } = e.target.dataset;
-      if (this.currentValue.length >= this.#MAX_DIGIT) {
+      const isUnderrMaxDigit = isValidDigit(this.currentValue);
+      if (!isUnderrMaxDigit) {
         alert(MESSAGES.UNDER_MAX_DIGIT);
         return;
       }
       this.addCurrentValue(value);
-      this.changeScreenValue();
+      this.renderScreenValue();
     });
   }
 
@@ -52,28 +54,40 @@ class App {
         return;
       }
       const operation = e.target.dataset.value;
-      this.setOperation(operation);
       if (operation === EQUAL) {
-        this.calculate();
-        this.changeScreenValue();
-        this.clearCaculator();
-      } else this.changeScreenValue();
+        this.checkValidFormula();
+      } else {
+        this.setOperation(operation);
+        this.renderScreenValue();
+        this.currentValue = '';
+      }
     });
+  }
+
+  checkValidFormula() {
+    if (!this.inputLog.length) {
+      alert(MESSAGES.ENTER_THE_REMAIN_VALUE);
+      return;
+    }
+    this.inputLog.push(Number(this.currentValue));
+    this.calculate();
+    this.renderScreenValue();
+    this.clearCaculator();
   }
 
   #setModifierEvent() {
     const modifier = document.querySelector('.modifier');
     modifier.addEventListener('click', () => {
       this.clearCaculator();
-      this.changeScreenValue();
+      this.renderScreenValue();
     });
   }
 
   addCurrentValue(value) {
     const isFirstZero = this.currentValue === '' && value === '0';
-    const isOverMaxDigit = this.currentValue.length >= this.#MAX_DIGIT;
+    const isUnderrMaxDigit = isValidDigit(this.currentValue);
 
-    if (isFirstZero || isOverMaxDigit) return;
+    if (isFirstZero || !isUnderrMaxDigit) return;
 
     this.currentValue += value;
     this.inputField += value;
@@ -82,7 +96,6 @@ class App {
   setOperation(operation) {
     this.inputLog.push(Number(this.currentValue));
     this.inputField += operation;
-    this.currentValue = '';
     if (!this.operation) this.operation = operation;
   }
 
@@ -119,7 +132,7 @@ class App {
     this.result = null;
   }
 
-  changeScreenValue() {
+  renderScreenValue() {
     if (this.inputField) this.#screen.textContent = this.inputField;
     else this.#screen.textContent = '0';
   }
