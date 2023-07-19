@@ -85,6 +85,15 @@ describe('AC 테스트', () => {
     expect(app.result).toEqual(null);
     expect(app.inputLog.length).toEqual(0);
   });
+
+  test('Clear 후 계산 테스트', () => {
+    app.result = null;
+    app.clearCaculator();
+    app.inputLog = [4, 2];
+    app.operation = PLUS;
+    app.calculate();
+    expect(app.result).toEqual(6);
+  });
 });
 
 describe('최대 자릿수 테스트', () => {
