@@ -55,7 +55,7 @@ class App {
   #setModifierEvent() {
     const modifier = document.querySelector('.modifier');
     modifier.addEventListener('click', () => {
-      this.#calculator.clear();
+      this.#calculator.pressModifier();
       this.#screen.render(this.#calculator.InputField);
     });
   }

@@ -77,6 +77,10 @@ class Calculator {
     this.#currentValue = String(this.#result);
   }
 
+  pressModifier() {
+    this.clear();
+  }
+
   clear() {
     if (!this.#result) {
       this.#inputField = '';
