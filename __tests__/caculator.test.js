@@ -1,4 +1,3 @@
-import App from '../src/js/App.js';
 import { DIVISION, EQUAL, MESSAGES, MINUS, MULTIPLICATION, PLUS } from '../src/js/constants.js';
 import Calculator from '../src/js/model/calculator.js';
 
